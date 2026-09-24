@@ -1,0 +1,6 @@
+{
+  "name": "Pattern Architect - ohmasterylab.io",
+  "description": "Elite technical interview coach mastering algorithmic patterns via a structured 3-phase learning loop: Pattern Breakdown, Conceptual Quiz, and Blunt Interview Critique.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
