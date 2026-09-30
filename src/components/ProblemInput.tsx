@@ -1,14 +1,28 @@
 import React, { useState } from 'react';
 import { PRESET_PROBLEMS } from '../data/presets';
 import { PresetProblem } from '../types';
-import { BookOpen, Cpu, ArrowRight, Sparkles } from 'lucide-react';
+import {
+  BookOpen,
+  Cpu,
+  ArrowRight,
+  Sparkles,
+  Layers,
+  CheckCircle2,
+  HelpCircle,
+  Code2,
+} from 'lucide-react';
 
 interface ProblemInputProps {
   onSubmit: (title: string, description: string) => void;
   isLoading: boolean;
+  onNavigateToDataStructures: () => void;
 }
 
-export const ProblemInput: React.FC<ProblemInputProps> = ({ onSubmit, isLoading }) => {
+export const ProblemInput: React.FC<ProblemInputProps> = ({
+  onSubmit,
+  isLoading,
+  onNavigateToDataStructures,
+}) => {
   const [selectedPresetId, setSelectedPresetId] = useState<string>('two-sum');
   const [problemTitle, setProblemTitle] = useState<string>(PRESET_PROBLEMS[0].title);
   const [problemText, setProblemText] = useState<string>(PRESET_PROBLEMS[0].description);
@@ -35,64 +49,144 @@ export const ProblemInput: React.FC<ProblemInputProps> = ({ onSubmit, isLoading 
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      {/* Hero Banner */}
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+      {/* Hero Banner with requested title */}
       <div className="text-center mb-8">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-mono mb-4 shadow-2xs">
           <Cpu className="w-3.5 h-3.5 text-emerald-600" />
-          <span>OHMASTERYLAB.IO // PATTERN ARCHITECT COACH</span>
+          <span>OHMASTERYLAB.IO // THE COMPLETE INTERVIEW CURRICULUM</span>
         </div>
-        <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 mb-3">
-          Stop Memorizing Solutions.{' '}
-          <span className="text-emerald-700">
-            Master Algorithmic Patterns.
+        <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-900 mb-4">
+          Master Everything Around{' '}
+          <span className="text-emerald-600 underline decoration-emerald-300 decoration-wavy decoration-2 underline-offset-8">
+            Data Structures & Patterns
           </span>
-        </h2>
-        <p className="text-slate-600 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
-          Elite technical interview coaching using a structured 3-phase loop. Deconstruct the
-          underlying invariant, defend it conceptually against edge cases, and face blunt L6 code & commentary review.
+        </h1>
+        <p className="text-slate-600 max-w-3xl mx-auto text-sm sm:text-base leading-relaxed">
+          From hardware RAM layouts and real-world system architecture, to the 3-phase LeetCode
+          pattern gauntlet. Pick your starting point below based on your current readiness.
         </p>
       </div>
 
-      {/* The 3-Phase Progression Preview */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-8">
-        <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
-          <div className="flex items-center gap-2 text-emerald-700 font-mono text-xs font-bold mb-1">
-            <span className="w-4 h-4 rounded bg-emerald-100 border border-emerald-300 flex items-center justify-center text-[10px]">1</span>
-            PATTERN BREAKDOWN
+      {/* Two-Track Learning Pathway (Data Structures vs LeetCode Patterns) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+        {/* Track 1: Data Structures (The Basics) */}
+        <div className="bg-white border-2 border-emerald-500/30 hover:border-emerald-500 rounded-2xl p-6 shadow-xs transition-all relative flex flex-col justify-between group">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="px-2.5 py-1 text-[11px] font-mono font-bold bg-emerald-100 text-emerald-800 rounded-md border border-emerald-300 uppercase">
+                Stage 1 • Foundations
+              </span>
+              <span className="text-xs font-mono text-slate-400">10 Core Structures</span>
+            </div>
+
+            <div className="flex items-center gap-2.5 pt-1">
+              <div className="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-sm">
+                <Layers className="w-5 h-5" />
+              </div>
+              <h2 className="text-lg font-bold text-slate-900">
+                Master the Data Structures (The Basics)
+              </h2>
+            </div>
+
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              New to data structures or need to refresh the fundamentals? Learn how arrays, linked lists,
+              heaps, trees, and graphs work under the hood. Includes real-world engineering analogies,
+              scratch code, and interactive quizzes.
+            </p>
+
+            <div className="space-y-1.5 pt-2 text-xs font-mono text-slate-600">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Physical RAM layout & CPU cache locality</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Industrial production engineering use-cases</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Zero-lock self-evaluation quizzes with explanations</span>
+              </div>
+            </div>
           </div>
-          <p className="text-xs text-slate-600">
-            Core pattern & data structure identified. The "aha!" logic, Big O comparisons, and ELI5 analogy.
-          </p>
+
+          <div className="pt-6">
+            <button
+              onClick={onNavigateToDataStructures}
+              className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-mono font-bold rounded-xl shadow-xs flex items-center justify-center gap-2 transition-all"
+            >
+              <span>Explore Data Structure Academy</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
-          <div className="flex items-center gap-2 text-amber-700 font-mono text-xs font-bold mb-1">
-            <span className="w-4 h-4 rounded bg-amber-100 border border-amber-300 flex items-center justify-center text-[10px]">2</span>
-            CONCEPTUAL QUIZ
+
+        {/* Track 2: LeetCode Patterns (Skip ahead) */}
+        <div className="bg-white border-2 border-slate-200 hover:border-slate-400 rounded-2xl p-6 shadow-xs transition-all relative flex flex-col justify-between">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="px-2.5 py-1 text-[11px] font-mono font-bold bg-slate-100 text-slate-700 rounded-md border border-slate-300 uppercase">
+                Stage 2 • Advanced Gauntlet
+              </span>
+              <span className="text-xs font-mono text-emerald-700 font-bold">Skip Ahead</span>
+            </div>
+
+            <div className="flex items-center gap-2.5 pt-1">
+              <div className="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-sm">
+                <Cpu className="w-5 h-5" />
+              </div>
+              <h2 className="text-lg font-bold text-slate-900">
+                Master Algorithmic Patterns (The Gauntlet)
+              </h2>
+            </div>
+
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Already know your data structures? Skip the basics and jump directly into the
+              rigorous 3-phase interview loop: identify the core pattern, pass the conceptual
+              defense quiz (≥80%), and survive blunt L6 code review.
+            </p>
+
+            <div className="space-y-1.5 pt-2 text-xs font-mono text-slate-600">
+              <div className="flex items-center gap-2">
+                <span className="w-3.5 h-3.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center justify-center text-[9px] font-bold">1</span>
+                <span>Phase 1: Invariant & logic breakdown + ELI5</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-3.5 h-3.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300 flex items-center justify-center text-[9px] font-bold">2</span>
+                <span>Phase 2: Conceptual logic quiz (no code allowed)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-3.5 h-3.5 rounded-full bg-rose-100 text-rose-800 border border-rose-300 flex items-center justify-center text-[9px] font-bold">3</span>
+                <span>Phase 3: Similar problem with blunt code critique</span>
+              </div>
+            </div>
           </div>
-          <p className="text-xs text-slate-600">
-            3-4 deep logic questions on invariants & edge cases. No code allowed. Must score ≥80% to proceed.
-          </p>
-        </div>
-        <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
-          <div className="flex items-center gap-2 text-rose-700 font-mono text-xs font-bold mb-1">
-            <span className="w-4 h-4 rounded bg-rose-100 border border-rose-300 flex items-center justify-center text-[10px]">3</span>
-            BLUNT CRITIQUE
+
+          <div className="pt-6">
+            <a
+              href="#leetcode-box"
+              className="w-full py-3 px-4 bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-mono font-bold rounded-xl shadow-xs flex items-center justify-center gap-2 transition-all"
+            >
+              <span>Skip to LeetCode Pattern Practice ↓</span>
+            </a>
           </div>
-          <p className="text-xs text-slate-600">
-            Solve a higher-order similar problem. Code + inline interview comments every 3-5 lines. Zero sugar-coating.
-          </p>
         </div>
       </div>
 
-      {/* Preset Problem Selection */}
-      <div className="bg-white border border-slate-200 rounded-xl p-5 sm:p-6 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-          <div className="flex items-center gap-2">
-            <BookOpen className="w-4 h-4 text-emerald-600" />
-            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider font-mono">
-              Select Benchmark Pattern or Paste Problem
-            </h3>
+      {/* Preset Problem Selection / LeetCode Input Box */}
+      <div id="leetcode-box" className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 shadow-sm scroll-mt-20">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100">
+          <div>
+            <div className="flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-emerald-600" />
+              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider font-mono">
+                Select Benchmark Pattern or Paste Problem
+              </h3>
+            </div>
+            <p className="text-xs text-slate-500 font-mono mt-0.5">
+              Curated easy, medium, and hard patterns — or input any custom question
+            </p>
           </div>
           <div className="flex items-center gap-2">
             <button

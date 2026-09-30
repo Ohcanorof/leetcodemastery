@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Header } from './components/Header';
+import { Header, MainViewTab } from './components/Header';
 import { ProblemInput } from './components/ProblemInput';
 import { Phase1View } from './components/Phase1View';
 import { Phase2View } from './components/Phase2View';
 import { Phase3View } from './components/Phase3View';
+import { DataStructuresView } from './components/DataStructuresView';
+import { DisclaimerModal } from './components/DisclaimerModal';
 import {
   PhaseNumber,
   Phase1Data,
@@ -11,9 +13,10 @@ import {
   Phase3Critique,
   SimilarProblem,
 } from './types';
-import { AlertCircle, CheckCircle, Info } from 'lucide-react';
+import { AlertCircle, CheckCircle, Info, Scale, ShieldCheck } from 'lucide-react';
 
 export default function App() {
+  const [activeView, setActiveView] = useState<MainViewTab>('leetcode');
   const [currentPhase, setCurrentPhase] = useState<PhaseNumber>(1);
   const [unlockedPhase, setUnlockedPhase] = useState<PhaseNumber>(1);
 
@@ -33,6 +36,9 @@ export default function App() {
   const [isEvaluatingPhase2, setIsEvaluatingPhase2] = useState<boolean>(false);
   const [isCritiquingPhase3, setIsCritiquingPhase3] = useState<boolean>(false);
   const [statusMessage, setStatusMessage] = useState<{ type: 'info' | 'error' | 'success'; text: string } | null>(null);
+
+  // Legal disclaimer modal state
+  const [isDisclaimerOpen, setIsDisclaimerOpen] = useState<boolean>(false);
 
   const showStatus = (text: string, type: 'info' | 'error' | 'success' = 'info') => {
     setStatusMessage({ type, text });
@@ -67,10 +73,11 @@ export default function App() {
       setPhase2Evaluation(null);
       setSimilarProblem(null);
       setPhase3Critique(null);
+      setActiveView('leetcode');
       showStatus('Phase 1 Pattern Breakdown generated successfully.', 'success');
     } catch (err: any) {
       console.error('Failed to analyze problem:', err);
-      // Clean fallback data if connection or API fails
+      // Clean fallback data if connection or API key fails
       const fallbackData: Phase1Data = {
         problemName: title,
         corePattern: title.toLowerCase().includes('two sum')
@@ -81,45 +88,51 @@ export default function App() {
           ? 'Sliding Window'
           : title.toLowerCase().includes('water')
           ? 'Two Pointers / Boundary Invariant'
+          : title.toLowerCase().includes('kth') || title.toLowerCase().includes('heap')
+          ? 'Min-Heap / Priority Queue'
           : 'Algorithmic Pattern Decomposition',
-        requiredDataStructure: title.toLowerCase().includes('water') ? 'Two Pointers (L/R)' : 'Hash Map',
+        requiredDataStructure: title.toLowerCase().includes('water')
+          ? 'Two Pointers (L/R)'
+          : title.toLowerCase().includes('heap') || title.toLowerCase().includes('kth')
+          ? 'Min-Heap'
+          : 'Hash Map',
         secondaryPatterns: ['Complement Tracking', 'Boundary Optimization'],
-        theLogic: `Transform an O(N^2) pairwise search into an O(N) single-pass scan by storing previously encountered values/indices in a hash map. For each element x, query if target - x already exists in the state in O(1) time.`,
+        theLogic: `Transform a brute force scan into an optimized state traversal by tracking invariant properties in an auxiliary data structure. For each visited element, query or update state in O(1) or O(log K) rather than rescanning.`,
         methodComparison: {
           bruteForce: {
-            approach: 'Check all pairs (i, j) with nested loops.',
+            approach: 'Check all candidate combinations with nested loops.',
             timeComplexity: 'O(N^2)',
             spaceComplexity: 'O(1)',
             bottleneck: 'Redundant nested scans through already verified elements.',
           },
           optimized: {
-            approach: 'One-pass hash table recording element indices as keys.',
+            approach: 'Single pass utilizing the identified auxiliary data structure.',
             timeComplexity: 'O(N)',
             spaceComplexity: 'O(N)',
-            advantage: 'Linear pass with constant time complement checks.',
+            advantage: 'Linear pass with constant time lookup and invariant enforcement.',
           },
         },
-        eli5: `Like having a coat check ticket. When someone gives you half of a ticket, you glance at your numbered rack to see if the matching half is already hanging there, instead of digging through every coat in the closet.`,
+        eli5: `Like having a fast index or coat check ticket instead of searching through every single rack in the warehouse every time someone asks for an item.`,
         youtubeUrl: `https://www.youtube.com/results?search_query=leetcode+${encodeURIComponent(title)}+solution`,
         coachNote: 'Master the invariant: What state must be true before and after each element is visited?',
         phase2Questions: [
           {
             id: 'q1',
-            question: 'Why does a hash map reduce the time complexity compared to sorting and two-pointers?',
+            question: 'Why does the chosen data structure reduce the time complexity compared to sorting or brute force?',
             focus: 'Asymptotic Trade-off',
-            whyItMatters: 'Sorting alters the original index order (requiring O(N log N) plus tracking index pairs), whereas hash lookup is O(N) total.',
+            whyItMatters: 'It replaces repetitive scans with direct O(1) address lookups or logarithmic bounds.',
           },
           {
             id: 'q2',
-            question: 'How do you prevent using the exact same element twice when target - nums[i] == nums[i]?',
-            focus: 'Edge Case & Self-Reference',
-            whyItMatters: 'Checking the map before inserting the current index guarantees an element cannot pair with itself.',
+            question: 'How do you handle edge cases such as empty input arrays, duplicates, or negative values?',
+            focus: 'Edge Case & Boundary Invariants',
+            whyItMatters: 'Guarantees the algorithm will not trigger out-of-bounds or zero-division crashes.',
           },
           {
             id: 'q3',
-            question: 'What happens to the space complexity if all numbers in the input array are identical?',
+            question: 'What is the exact auxiliary space complexity and what happens if all elements in the input are identical?',
             focus: 'Memory Bound Invariant',
-            whyItMatters: 'The hash map stores duplicate numbers or distinct complements; memory remains bounded by O(N).',
+            whyItMatters: 'Confirms you understand worst-case RAM overhead during execution.',
           },
         ],
       };
@@ -127,6 +140,7 @@ export default function App() {
       setHasActiveProblem(true);
       setCurrentPhase(1);
       setUnlockedPhase(1);
+      setActiveView('leetcode');
       showStatus('Pattern Breakdown active.', 'info');
     } finally {
       setIsLoadingPhase1(false);
@@ -338,10 +352,20 @@ ${phase3Critique ? `- Verdict: ${phase3Critique.verdict} (${phase3Critique.overa
     showStatus('Exported session notes successfully.', 'success');
   };
 
+  // Jump from Data Structures to LeetCode
+  const handleGoToLeetCodeFromDS = (title?: string, description?: string) => {
+    setActiveView('leetcode');
+    if (title && description) {
+      handleStartProblem(title, description);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-emerald-200 selection:text-slate-900">
       {/* Top Header */}
       <Header
+        activeView={activeView}
+        onSelectView={(v) => setActiveView(v)}
         currentPhase={currentPhase}
         unlockedPhase={unlockedPhase}
         onSelectPhase={(p) => setCurrentPhase(p)}
@@ -378,67 +402,109 @@ ${phase3Critique ? `- Verdict: ${phase3Critique.verdict} (${phase3Critique.overa
 
       {/* Main Content Area */}
       <main className="flex-1 pb-16">
-        {!hasActiveProblem ? (
-          <ProblemInput onSubmit={handleStartProblem} isLoading={isLoadingPhase1} />
+        {activeView === 'data-structures' ? (
+          <DataStructuresView
+            onGoToLeetCode={handleGoToLeetCodeFromDS}
+            onOpenDisclaimer={() => setIsDisclaimerOpen(true)}
+          />
         ) : (
           <div>
-            {currentPhase === 1 && phase1Data && (
-              <Phase1View
-                data={phase1Data}
-                problemTitle={problemTitle}
-                problemText={problemText}
-                onProceedToQuiz={() => {
-                  setUnlockedPhase((prev) => Math.max(prev, 2) as PhaseNumber);
-                  setCurrentPhase(2);
-                }}
-                onAskSocratic={(q) => handleAskSocratic(q)}
+            {!hasActiveProblem ? (
+              <ProblemInput
+                onSubmit={handleStartProblem}
+                isLoading={isLoadingPhase1}
+                onNavigateToDataStructures={() => setActiveView('data-structures')}
               />
-            )}
+            ) : (
+              <div>
+                {currentPhase === 1 && phase1Data && (
+                  <Phase1View
+                    data={phase1Data}
+                    problemTitle={problemTitle}
+                    problemText={problemText}
+                    onProceedToQuiz={() => {
+                      setUnlockedPhase((prev) => Math.max(prev, 2) as PhaseNumber);
+                      setCurrentPhase(2);
+                    }}
+                    onAskSocratic={(q) => handleAskSocratic(q)}
+                  />
+                )}
 
-            {currentPhase === 2 && phase1Data && (
-              <Phase2View
-                phase1Data={phase1Data}
-                evaluation={phase2Evaluation}
-                onSubmitAnswers={handlePhase2Submit}
-                onProceedToChallenge={() => {
-                  if (unlockedPhase >= 3) {
-                    setCurrentPhase(3);
-                  }
-                }}
-                onAskSocratic={(q, ctx) => handleAskSocratic(q, ctx)}
-                isEvaluating={isEvaluatingPhase2}
-              />
-            )}
+                {currentPhase === 2 && phase1Data && (
+                  <Phase2View
+                    phase1Data={phase1Data}
+                    evaluation={phase2Evaluation}
+                    onSubmitAnswers={handlePhase2Submit}
+                    onProceedToChallenge={() => {
+                      if (unlockedPhase >= 3) {
+                        setCurrentPhase(3);
+                      }
+                    }}
+                    onAskSocratic={(q, ctx) => handleAskSocratic(q, ctx)}
+                    isEvaluating={isEvaluatingPhase2}
+                  />
+                )}
 
-            {currentPhase === 3 && (
-              <Phase3View
-                similarProblem={
-                  similarProblem || {
-                    title: 'Higher-Order Pattern Progression',
-                    difficulty: 'Medium',
-                    description: 'Implement the optimized solution under strict constraints.',
-                    relationToOriginal: 'Tests the same core pattern under higher constraint density.',
-                  }
-                }
-                critique={phase3Critique}
-                onSubmitSolution={handlePhase3Submit}
-                isCritiquing={isCritiquingPhase3}
-                onAskSocratic={(q) => handleAskSocratic(q)}
-              />
+                {currentPhase === 3 && (
+                  <Phase3View
+                    similarProblem={
+                      similarProblem || {
+                        title: 'Higher-Order Pattern Progression',
+                        difficulty: 'Medium',
+                        description: 'Implement the optimized solution under strict constraints.',
+                        relationToOriginal: 'Tests the same core pattern under higher constraint density.',
+                      }
+                    }
+                    critique={phase3Critique}
+                    onSubmitSolution={handlePhase3Submit}
+                    isCritiquing={isCritiquingPhase3}
+                    onAskSocratic={(q) => handleAskSocratic(q)}
+                  />
+                )}
+              </div>
             )}
           </div>
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-200 bg-white py-4 text-center text-xs font-mono text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <div>
-            <span className="text-emerald-700 font-bold">ohmasterylab.io</span> // The Pattern Architect Engine
+      {/* Footer with Legal & Educational Disclaimer */}
+      <footer className="border-t border-slate-200 bg-white py-6 text-xs text-slate-500">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-3">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            <div className="flex items-center gap-2">
+              <span className="w-5 h-5 rounded bg-emerald-600 text-white font-mono font-bold flex items-center justify-center text-[10px]">
+                Ω
+              </span>
+              <span className="text-emerald-700 font-bold font-mono">ohmasterylab.io</span>
+              <span>// The Complete LeetCode & Data Structure Architecture System</span>
+            </div>
+            <div className="font-mono text-[11px] text-slate-500">
+              Strict 3-Phase Loop • 10 Core Structures • Zero Sugar-Coating
+            </div>
           </div>
-          <div>Strict 3-Phase Algorithmic Loop • Zero Sugar-Coating</div>
+
+          {/* Semi-transparent protective disclaimer requested by user */}
+          <div className="pt-2 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-2 text-[11px] opacity-75 hover:opacity-100 transition-opacity">
+            <p className="text-slate-500 text-center md:text-left">
+              <span className="font-semibold text-slate-700">Educational Fair Use Notice:</span>{' '}
+              ohmasterylab.io is an independent educational platform. All algorithms, pattern formulations, and problem names are studied under Fair Use (17 U.S.C. § 107) for transformative instructional commentary. Not affiliated with or endorsed by LeetCode LLC or YouTube.
+            </p>
+            <button
+              onClick={() => setIsDisclaimerOpen(true)}
+              className="shrink-0 underline text-emerald-700 hover:text-emerald-800 font-mono text-[11px] flex items-center gap-1 cursor-pointer"
+            >
+              <Scale className="w-3 h-3" />
+              <span>Legal & Fair Use Policy</span>
+            </button>
+          </div>
         </div>
       </footer>
+
+      {/* Disclaimer Modal */}
+      <DisclaimerModal
+        isOpen={isDisclaimerOpen}
+        onClose={() => setIsDisclaimerOpen(false)}
+      />
     </div>
   );
 }

@@ -1,8 +1,12 @@
 import React from 'react';
-import { Download, RotateCcw } from 'lucide-react';
+import { Download, RotateCcw, Layers, Cpu, BookOpen } from 'lucide-react';
 import { PhaseNumber } from '../types';
 
+export type MainViewTab = 'leetcode' | 'data-structures';
+
 interface HeaderProps {
+  activeView: MainViewTab;
+  onSelectView: (view: MainViewTab) => void;
   currentPhase: PhaseNumber;
   unlockedPhase: PhaseNumber;
   onSelectPhase: (phase: PhaseNumber) => void;
@@ -14,6 +18,8 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({
+  activeView,
+  onSelectView,
   currentPhase,
   unlockedPhase,
   onSelectPhase,
@@ -24,35 +30,72 @@ export const Header: React.FC<HeaderProps> = ({
   phase3Verdict,
 }) => {
   return (
-    <header className="border-b border-slate-200 bg-white sticky top-0 z-40 shadow-xs">
+    <header className="border-b border-slate-200 bg-white sticky top-0 z-40 shadow-2xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo & Persona - Green theme requested */}
+          {/* Logo & Persona - Green theme */}
           <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-lg bg-emerald-600 hover:bg-emerald-500 flex items-center justify-center shadow-md shadow-emerald-600/20 text-white font-mono font-bold text-xl transition-all">
-              Ω
-            </div>
-            <div>
-              <div className="flex items-center space-x-2">
-                <span className="text-xs font-mono font-bold tracking-wider text-emerald-700 uppercase">
-                  ohmasterylab.io
-                </span>
-                <span className="text-[11px] px-1.5 py-0.2 rounded bg-slate-100 border border-slate-200 text-slate-600 font-mono">
-                  v3.8
-                </span>
+            <button
+              onClick={() => onSelectView('leetcode')}
+              className="flex items-center space-x-3 text-left focus:outline-none"
+            >
+              <div className="w-9 h-9 rounded-lg bg-emerald-600 hover:bg-emerald-500 flex items-center justify-center shadow-md shadow-emerald-600/20 text-white font-mono font-bold text-xl transition-all">
+                Ω
               </div>
-              <h1 className="text-base sm:text-lg font-extrabold tracking-tight text-slate-900 flex items-center gap-2">
-                The Pattern Architect
-                <span className="text-[11px] font-mono px-2 py-0.5 rounded-full border border-emerald-300 text-emerald-800 bg-emerald-50 hidden sm:inline-block font-semibold">
-                  ELITE COACH
-                </span>
-              </h1>
-            </div>
+              <div>
+                <div className="flex items-center space-x-2">
+                  <span className="text-xs font-mono font-bold tracking-wider text-emerald-700 uppercase">
+                    ohmasterylab.io
+                  </span>
+                  <span className="text-[11px] px-1.5 py-0.2 rounded bg-slate-100 border border-slate-200 text-slate-600 font-mono">
+                    v4.0
+                  </span>
+                </div>
+                <h1 className="text-sm sm:text-base font-extrabold tracking-tight text-slate-900 flex items-center gap-1.5">
+                  The Pattern Architect
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full border border-emerald-300 text-emerald-800 bg-emerald-50 hidden sm:inline-block font-semibold">
+                    ELITE COACH
+                  </span>
+                </h1>
+              </div>
+            </button>
+          </div>
+
+          {/* Center Tabs: Data Structures vs LeetCode Patterns */}
+          <div className="flex items-center p-1 bg-slate-100 border border-slate-200 rounded-xl text-xs font-mono">
+            <button
+              onClick={() => onSelectView('data-structures')}
+              className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all ${
+                activeView === 'data-structures'
+                  ? 'bg-white text-emerald-900 font-bold shadow-2xs border border-slate-200/80'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Layers className="w-3.5 h-3.5 text-emerald-600" />
+              <span className="hidden sm:inline">Data Structures</span>
+              <span className="sm:hidden">Structures</span>
+            </button>
+
+            <button
+              onClick={() => onSelectView('leetcode')}
+              className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all ${
+                activeView === 'leetcode'
+                  ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Cpu className="w-3.5 h-3.5 text-slate-700" />
+              <span className="hidden sm:inline">LeetCode Patterns</span>
+              <span className="sm:hidden">Patterns</span>
+              {hasActiveProblem && (
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse ml-0.5" />
+              )}
+            </button>
           </div>
 
           {/* Action buttons */}
           <div className="flex items-center space-x-2">
-            {hasActiveProblem && (
+            {activeView === 'leetcode' && hasActiveProblem && (
               <>
                 <button
                   onClick={onExport}
@@ -75,8 +118,8 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Phase navigation bar */}
-        {hasActiveProblem && (
+        {/* Phase navigation bar (active when inside LeetCode Patterns with active problem) */}
+        {activeView === 'leetcode' && hasActiveProblem && (
           <div className="grid grid-cols-3 border-t border-slate-200 py-2.5 gap-2 text-xs sm:text-sm font-mono">
             {/* Phase 1 */}
             <button
