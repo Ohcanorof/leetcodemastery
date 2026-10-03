@@ -59,25 +59,25 @@ export const ProblemInput: React.FC<ProblemInputProps> = ({
         <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-900 mb-4">
           Master Everything Around{' '}
           <span className="text-emerald-600 underline decoration-emerald-300 decoration-wavy decoration-2 underline-offset-8">
-            Data Structures & Patterns
+            Algorithms & Data Structures
           </span>
         </h1>
         <p className="text-slate-600 max-w-3xl mx-auto text-sm sm:text-base leading-relaxed">
-          From hardware RAM layouts and real-world system architecture, to the 3-phase LeetCode
+          From physical RAM layouts and core algorithmic paradigms, to the 3-phase LeetCode
           pattern gauntlet. Pick your starting point below based on your current readiness.
         </p>
       </div>
 
-      {/* Two-Track Learning Pathway (Data Structures vs LeetCode Patterns) */}
+      {/* Two-Track Learning Pathway (Foundations vs LeetCode Patterns) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
-        {/* Track 1: Data Structures (The Basics) */}
+        {/* Track 1: Data Structures & Algorithms (The Basics) */}
         <div className="bg-white border-2 border-emerald-500/30 hover:border-emerald-500 rounded-2xl p-6 shadow-xs transition-all relative flex flex-col justify-between group">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="px-2.5 py-1 text-[11px] font-mono font-bold bg-emerald-100 text-emerald-800 rounded-md border border-emerald-300 uppercase">
                 Stage 1 • Foundations
               </span>
-              <span className="text-xs font-mono text-slate-400">10 Core Structures</span>
+              <span className="text-xs font-mono text-slate-400">10 Structures • 18 Algorithms</span>
             </div>
 
             <div className="flex items-center gap-2.5 pt-1">
@@ -85,28 +85,28 @@ export const ProblemInput: React.FC<ProblemInputProps> = ({
                 <Layers className="w-5 h-5" />
               </div>
               <h2 className="text-lg font-bold text-slate-900">
-                Master the Data Structures (The Basics)
+                Master Data Structures & Algorithms (The Basics)
               </h2>
             </div>
 
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              New to data structures or need to refresh the fundamentals? Learn how arrays, linked lists,
-              heaps, trees, and graphs work under the hood. Includes real-world engineering analogies,
-              scratch code, and interactive quizzes.
+              New or need a structured refresher? Explore the 10 core data structures and 18 algorithmic
+              paradigms (10 high-frequency interview patterns + 8 classical college algorithms bridging the gap).
+              Includes decision matrices, fatal interview traps, multi-language scratch code, and quizzes.
             </p>
 
             <div className="space-y-1.5 pt-2 text-xs font-mono text-slate-600">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Physical RAM layout & CPU cache locality</span>
+                <span>10 Data Structures & 18 Core + Classical Algorithms</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Industrial production engineering use-cases</span>
+                <span>Decision rules, fatal traps & standard library cheat sheets</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Zero-lock self-evaluation quizzes with explanations</span>
+                <span>Multi-language implementations (Python, Java, C++, TS, Go)</span>
               </div>
             </div>
           </div>
@@ -116,7 +116,7 @@ export const ProblemInput: React.FC<ProblemInputProps> = ({
               onClick={onNavigateToDataStructures}
               className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-mono font-bold rounded-xl shadow-xs flex items-center justify-center gap-2 transition-all"
             >
-              <span>Explore Data Structure Academy</span>
+              <span>Explore Foundations Academy (DS & Algo)</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

@@ -61,7 +61,7 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
           </div>
 
-          {/* Center Tabs: Data Structures vs LeetCode Patterns */}
+          {/* Center Tabs: Foundations vs LeetCode Patterns */}
           <div className="flex items-center p-1 bg-slate-100 border border-slate-200 rounded-xl text-xs font-mono">
             <button
               onClick={() => onSelectView('data-structures')}
@@ -72,8 +72,8 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
             >
               <Layers className="w-3.5 h-3.5 text-emerald-600" />
-              <span className="hidden sm:inline">Data Structures</span>
-              <span className="sm:hidden">Structures</span>
+              <span className="hidden sm:inline">Foundations (DS & Algo)</span>
+              <span className="sm:hidden">Foundations</span>
             </button>
 
             <button
